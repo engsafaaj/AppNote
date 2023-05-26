@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:AppNote.ViewModels"
+             x:Class="AppNote.Views.NoteView">
+    <ContentView.BindingContext>
+        <viewmodel:NoteViewModel/>
+    </ContentView.BindingContext>
+    
+    <VerticalStackLayout Padding="15">
+        <Label  
+            FontSize="Medium"
+            Text="Note Data"
+            HorizontalOptions="Start" />
+        <Frame>
+            <VerticalStackLayout Spacing="5">
+                <Label  
+            FontSize="Small"
+            Text="Note Title:"
+            HorizontalOptions="Start" />
+                <Entry Placeholder="Enter title here" Text="{Binding NoteTitle}"
+            FontSize="Medium"
+            />
+                <Label  
+            FontSize="Small"
+            Text="Note Description:"
+            HorizontalOptions="Start" />
+                <Editor Placeholder="Enter description herer" Text="{Binding NoteDescription}"
+            HeightRequest="200"        
+            FontSize="Medium"
+            />
+                <Button Command="{Binding AddNoteCommand}"  Text="Add Note"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <ListView   ItemsSource="{Binding NoteCollection}" SelectedItem="{Binding SelectedNote}">
+            <ListView.ItemTemplate>
+                <DataTemplate >
+                    <TextCell 
+                        Text="{Binding Title}" Detail="{Binding Description}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        
+        <HorizontalStackLayout Spacing="30" Margin="10">
+            <Button Text="Remove Note" Command="{Binding RemoveNoteCommand}"/>
+            <Button Text="Edit Note" Command="{Binding EditNoteCommand}"  />
+            
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentView>
