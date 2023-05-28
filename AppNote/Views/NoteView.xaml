@@ -33,7 +33,7 @@
             </VerticalStackLayout>
         </Frame>
 
-        <ListView   ItemsSource="{Binding NoteCollection}" SelectedItem="{Binding SelectedNote}">
+        <ListView x:Name="ListViewNote" ItemSelected="ListViewNote_ItemSelected"   ItemsSource="{Binding NoteCollection}" SelectedItem="{Binding SelectedNote}">
             <ListView.ItemTemplate>
                 <DataTemplate >
                     <TextCell 
