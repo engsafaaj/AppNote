@@ -8,5 +8,5 @@ public partial class NoteView : ContentView
 		BindingContext =new ViewModels.NoteViewModel();
     }
 
-   
+ 
 }

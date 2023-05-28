@@ -2,94 +2,51 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
-
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 namespace AppNote.ViewModels
 {
-    public partial class NoteViewModel : INotifyPropertyChanged
+    public partial class NoteViewModel : ObservableObject
     {
         // Fields
-        private string _noteTitle;
-        private string _noteDescription;
-        private Note _selectedNote;
+        [ObservableProperty]
+         string noteTitle;
 
-        // Get and Set
-        public string NoteTitle
-        {
-            get => _noteTitle;
-            set
-            {
-                if (_noteTitle != value)
-                {
-                    _noteTitle = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+        string noteDescription;
 
-        public string NoteDescription
-        {
-            get => _noteDescription;
-            set
-            {
-                if (_noteDescription != value)
-                {
-                    _noteDescription = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+         Note selectedNote;
 
-        public Note SelectedNote
-        {
-            get => _selectedNote;
-            set
-            {
-                if (_selectedNote != value)
-                {
-                    _selectedNote = value;
-                    NoteTitle=_selectedNote.Title; NoteDescription=_selectedNote.Description; // Set From List to UI
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        // Property
-        public ObservableCollection<Note> NoteCollection { get; set; }
-        public ICommand AddNoteCommand { get; }
-        public ICommand EditNoteCommand { get; }
-        public ICommand RemoveNoteCommand { get; }
-
-
+        [ObservableProperty]
+         ObservableCollection<Note> noteCollection;
 
         public NoteViewModel()
         {
-            NoteCollection = new ObservableCollection<Note>();
-            AddNoteCommand = new Command(AddNote);
-            RemoveNoteCommand = new Command(DeleteNote);
-            EditNoteCommand = new Command(EditNote);
+            noteCollection = new ObservableCollection<Note>();
+           
         }
 
         // Voids Write Data
-        private void EditNote(object obj)
+        [RelayCommand]
+         void EditNote()
         {
             if (SelectedNote != null)
             {
                 foreach (Note note in NoteCollection.ToList())
-                { 
-                    if(note == SelectedNote)
+                {
+                    if (note == SelectedNote)
                     {
                         // Set New Note
                         var newNote = new Note
                         {
                             Id = note.Id,
-                            Title=NoteTitle,
-                            Description=NoteDescription
+                            Title = NoteTitle,
+                            Description = NoteDescription
                         };
 
                         // Remove Note
@@ -98,11 +55,12 @@ namespace AppNote.ViewModels
                     }
                 }
             }
-        }
+        } // EditNoteCommand " Auto"
 
-        private void DeleteNote(object obj)
+        [RelayCommand]
+        void DeleteNote()
         {
-            if(SelectedNote!= null)
+            if (SelectedNote != null)
             {
                 NoteCollection.Remove(SelectedNote);
                 // Rest Values
@@ -111,7 +69,8 @@ namespace AppNote.ViewModels
             }
         }
 
-        private void AddNote(object obj)
+        [RelayCommand]
+        void AddNote()
         {
             // Generate a unique ID for the new person
             int newId = NoteCollection.Count > 0 ? NoteCollection.Max(p => p.Id) + 1 : 1;
@@ -125,14 +84,9 @@ namespace AppNote.ViewModels
             NoteCollection.Add(note);
             // Rest Values
             NoteTitle = string.Empty;
-            NoteDescription=string.Empty;
+            NoteDescription = string.Empty;
         }
 
-        // PropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName=null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+       
     }
 }
