@@ -1,4 +1,5 @@
-﻿using AppNote.ViewModels;
+﻿using AppNote.Data;
+using AppNote.ViewModels;
 using AppNote.Views;
 using Microsoft.Extensions.Logging;
 
@@ -8,6 +9,10 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
 	{
+		// DataBase Created
+		DBContext dbContext = new DBContext();
+		dbContext.Database.EnsureCreated();
+		//
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
@@ -19,6 +24,8 @@ public static class MauiProgram
 		// Singleton
 		builder.Services.AddSingleton<NoteView>();
 		builder.Services.AddSingleton<NoteViewModel>();
+
+		
 
 #if DEBUG
 		builder.Logging.AddDebug();

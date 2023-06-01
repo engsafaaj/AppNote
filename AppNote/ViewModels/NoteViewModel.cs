@@ -8,10 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using AppNote.Data;
+
 namespace AppNote.ViewModels
 {
     public partial class NoteViewModel : ObservableObject
     {
+        DBContext db;
         // Fields
         [ObservableProperty]
          string noteTitle;
@@ -28,7 +31,8 @@ namespace AppNote.ViewModels
         public NoteViewModel()
         {
             noteCollection = new ObservableCollection<Note>();
-           
+            db=new DBContext();
+            var listOfNotes = db.Notes.ToList();
         }
 
         // Voids Write Data
@@ -81,6 +85,15 @@ namespace AppNote.ViewModels
                 Title = NoteTitle,
                 Description = NoteDescription,
             };
+
+            // For Test
+            var note1 = new Note
+            {
+                Title = NoteTitle,
+                Description = NoteDescription,
+            };
+            db.Notes.Add(note1);db.SaveChanges();
+            // 
             NoteCollection.Add(note);
             // Rest Values
             NoteTitle = string.Empty;
@@ -89,7 +102,7 @@ namespace AppNote.ViewModels
 
        public void SetData()
         {
-            NoteTitle=SelectedNote.Title; NoteDescription=SelectedNote.Description;
+            NoteTitle =SelectedNote.Title; NoteDescription=SelectedNote.Description;
         }
     }
 }
