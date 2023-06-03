@@ -1,4 +1,5 @@
-﻿using AppNote.ViewModels;
+﻿using AppNote.Data;
+using AppNote.ViewModels;
 
 namespace AppNote;
 

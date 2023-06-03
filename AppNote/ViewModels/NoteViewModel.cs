@@ -17,56 +17,54 @@ namespace AppNote.ViewModels
         DBContext db;
         // Fields
         [ObservableProperty]
-         string noteTitle;
+        string noteTitle;
 
         [ObservableProperty]
         string noteDescription;
 
         [ObservableProperty]
-         Note selectedNote;
+        Note selectedNote;
 
         [ObservableProperty]
-         ObservableCollection<Note> noteCollection;
+        ObservableCollection<Note> noteCollection;
+        private NoteEntity dataHelper;
 
         public NoteViewModel()
         {
             noteCollection = new ObservableCollection<Note>();
-            db=new DBContext();
-            var listOfNotes = db.Notes.ToList();
+
+            dataHelper = new NoteEntity();
+            LoadData();
         }
 
         // Voids Write Data
         [RelayCommand]
-         void EditNote()
+        async void EditNote()
         {
             if (SelectedNote != null)
             {
-                foreach (Note note in NoteCollection.ToList())
+                // Set New Note
+                var newNote = new Note
                 {
-                    if (note == SelectedNote)
-                    {
-                        // Set New Note
-                        var newNote = new Note
-                        {
-                            Id = note.Id,
-                            Title = NoteTitle,
-                            Description = NoteDescription
-                        };
+                    Id = SelectedNote.Id,
+                    Title = NoteTitle,
+                    Description = NoteDescription
+                };
 
-                        // Remove Note
-                        NoteCollection.Remove(note);
-                        NoteCollection.Add(newNote);
-                    }
-                }
+                // Remove Note
+             await  dataHelper.UpdateDataAsync(newNote);
+                LoadData();
+
             }
         } // EditNoteCommand " Auto"
 
         [RelayCommand]
-        void DeleteNote()
+        async void DeleteNote()
         {
             if (SelectedNote != null)
             {
-                NoteCollection.Remove(SelectedNote);
+                await dataHelper.RemoveDataAsync(SelectedNote);
+                LoadData();
                 // Rest Values
                 NoteTitle = string.Empty;
                 NoteDescription = string.Empty;
@@ -74,35 +72,35 @@ namespace AppNote.ViewModels
         }
 
         [RelayCommand]
-        void AddNote()
+        async void AddNote()
         {
-            // Generate a unique ID for the new person
-            int newId = NoteCollection.Count > 0 ? NoteCollection.Max(p => p.Id) + 1 : 1;
+
             // Set New Note
             var note = new Note
             {
-                Id = newId,
                 Title = NoteTitle,
                 Description = NoteDescription,
             };
 
-            // For Test
-            var note1 = new Note
-            {
-                Title = NoteTitle,
-                Description = NoteDescription,
-            };
-            db.Notes.Add(note1);db.SaveChanges();
-            // 
-            NoteCollection.Add(note);
+            await dataHelper.AddDataAsync(note);
+            LoadData();
+
             // Rest Values
             NoteTitle = string.Empty;
             NoteDescription = string.Empty;
         }
 
-       public void SetData()
+        public void SetData()
         {
-            NoteTitle =SelectedNote.Title; NoteDescription=SelectedNote.Description;
+            NoteTitle = SelectedNote.Title; NoteDescription = SelectedNote.Description;
+        }
+        public async void LoadData()
+        {
+            NoteCollection.Clear();
+            foreach (var note in await dataHelper.GetAllAsync())
+            {
+                NoteCollection.Add(note);
+            }
         }
     }
 }

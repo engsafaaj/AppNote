@@ -1,4 +1,5 @@
 ﻿using AppNote.Data;
+using AppNote.Models;
 using AppNote.ViewModels;
 using AppNote.Views;
 using Microsoft.Extensions.Logging;
